@@ -2,28 +2,12 @@ use std::io;
 use std::io::Write;
 use rand::{rng, seq::SliceRandom};
 
-enum TileType {
-    Empty,
-    Grass,
-    Rock
-}
+mod entity;
+mod gamespace;
+use entity::*;
+use gamespace::*;
 
-struct Tile {
-    entity_id: u32,
-    tiletype: TileType
-}
 
-fn make_grid(rows: usize, cols: usize) -> Vec<Vec<Tile>> {
-    let mut grid = Vec::new();   
-    for _r in 0..rows {
-        let mut row = Vec::new();
-        for _c in 0..cols {
-            row.push(Tile {entity_id: 0, tiletype: TileType::Grass});
-        }
-        grid.push(row);
-    }
-    return grid;
-}
 
 fn get_tile_render_char (tile: &Tile) -> char {
     match tile.tiletype {
@@ -33,11 +17,16 @@ fn get_tile_render_char (tile: &Tile) -> char {
     }
 }
 
+fn get_entity_by_id(id: EntityID) -> Entity{
+    entity_storage[id]
+}
+
 fn get_entity_render_char (tile: &Tile) -> char {
-    match tile.entity_id {
-        1 => 'A',
-        2 => 'V',
-        _ => 'E',
+    get_entity_by_id(tile.occupant);
+    match tile.occupant {
+        None => 'E',
+        Hawk => 'H',
+        Dove => 'D',
     }
 }
 
@@ -95,18 +84,32 @@ fn get_user_int() -> usize{
     get_user_input().parse().expect("not number")
 }
 
-//fn place_character(grid: &mut Vec<Vec<char>>,entity: char, xpos: usize, ypos: usize) {
-//    grid[xpos][ypos] = entity;
-//}
+fn make_grid(rows: usize, cols: usize) -> Vec<Vec<Tile>> {
+    let mut grid = Vec::new();   
+    for _r in 0..rows {
+        let mut row = Vec::new();
+        for _c in 0..cols {
+            row.push(Tile {occupant: None, tiletype: TileType::Grass});
+        }
+        grid.push(row);
+    }
+    return grid;
+}
 
-//fn get_pos () -> (usize, usize) {
-//
-//}
+fn make_empty_world(cols: usize, rows: usize) -> World {
+    let empty_world = World {width: cols, height: rows, tiles: make_grid(rows,cols)};
+    return empty_world
+}
+
+fn make_entity_storage() -> Vec<Entity> {
+    let entity_storage = Vec::new();
+    return entity_storage
+}
 
 fn main() {
     let rows = get_user_int();
     let cols = get_user_int();
-    let mut user_grid = make_grid(rows, cols);
+    let gamespace = Simulation{world: make_empty_world(cols, rows),entities: make_entity_storage()};
     render_grid(&user_grid);
     populate_grid(&mut user_grid);
     println!("--------");
