@@ -1,5 +1,5 @@
 
-enum EntityType {
+pub enum EntityType {
     Hawk,
     Dove,
 }
