@@ -18,7 +18,7 @@ pub struct World {
     pub tiles: Vec<Vec<Tile>>,
 }
 
-pub struct Simulation {
+pub struct Gamespace {
     pub world: World,
     pub entities: Vec<Entity>,
 }

@@ -113,5 +113,6 @@ fn main() {
     //let rows = get_user_int();
     //let cols = get_user_int();
     //let gamespace = Simulation{world: make_empty_world(cols, rows),entities: make_entity_storage()};
-    main_menu()
+    let mut app = App::new();
+    app.main_menu();
 }
