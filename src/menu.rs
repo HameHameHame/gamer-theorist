@@ -1,16 +1,18 @@
 use std::io;
 use std::io::Write;
+use crate::gamespace::*;
 
 
 pub struct App {
     pub settings: Settings,
-    //pub gamespace: Gamespace,
+    pub gamespace: Option<Gamespace>,
 }
 
 impl App {
     pub fn new() -> Self {
         Self {
-            settings: Settings::default()
+            settings: Settings::default(),
+            gamespace: None,
         }
     }
     pub fn main_menu(&mut self) {
@@ -27,7 +29,7 @@ impl App {
     }
     fn main_menu_selection(&mut self,sel: usize) {
         match sel {
-            1 => simulation_start(),
+            1 => self.simulation_start(),
             2 => self.settings_menu(),
             3 => quit_program(),
             _ => self.main_menu(),
@@ -76,6 +78,12 @@ impl App {
         self.settings.starting_pop_percentage = get_user_int();
         self.settings_menu();
     }
+    fn simulation_start(&self) {
+        clear();
+        println!("simulation starting!");
+        self.gamespace = Some(Gamespace::new(self.settings));
+        gamespace.play();
+    }
 
 }
 
@@ -93,22 +101,15 @@ fn clear() {
     print!("\x1B[2J\x1B[H");
 }
 
-
-
-fn simulation_start() {
-    clear();
-    println!("simulation start")
-}
-
 fn quit_program() {
     std::process::exit(0)
 }
 
 #[derive(Debug)]
 pub struct Settings {
-    world_width: usize,
-    world_height: usize,
-    starting_pop_percentage: usize
+    pub world_width: usize,
+    pub world_height: usize,
+    pub starting_pop_percentage: usize
 }
 
 impl Default for Settings {
