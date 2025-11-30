@@ -78,11 +78,11 @@ impl App {
         self.settings.starting_pop_percentage = get_user_int();
         self.settings_menu();
     }
-    fn simulation_start(&self) {
+    fn simulation_start(&mut self) {
         clear();
         println!("simulation starting!");
-        self.gamespace = Some(Gamespace::new(self.settings));
-        gamespace.play();
+        self.gamespace = Some(Gamespace::new(&self.settings));
+        self.gamespace.as_ref().expect("gamespace not made").play();
     }
 
 }
