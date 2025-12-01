@@ -1,5 +1,6 @@
 use crate::entity::*;
 use crate::menu::*;
+use rand::{rng, seq::SliceRandom};
 
 pub type EntityID = usize;
 pub struct Tile {
@@ -38,6 +39,11 @@ impl World{
         }
         return grid;
     }
+    pub fn place_entity_in_world(&mut self, id: EntityID, x: usize, y: usize) {
+        println!("world place id is currently {}", id);
+        self.tiles[y][x].occupant = Some(id);
+        println!("and the value after setting = {:?}", self.tiles[y][x].occupant)
+    }
 }
 
 pub struct Gamespace {
@@ -59,13 +65,39 @@ impl Gamespace {
         }
         return entities
     }
-    pub fn play(&self) {
+    pub fn play(&mut self) {
         for ent in &self.entities {
             println!("----------");
             println!("entity id: {}", ent.entity_id);
             println!("entity hp: {}", ent.hp);
         }
-        println!("total entities = {}", &self.entities.len())
+        println!("total entities = {}", &self.entities.len());
+        println!("printable? -- {}", self.rng_entity_positions()[71]);
+        println!("worldstat: {}", self.world.width);
+        self.populate_world();
+        println!("entity id: {}", self.entities[10].entity_id);
+        println!("entity position be random = {:?}", self.entities[10].posxy);
+        println!("tilepos be matching with id: {:?}", self.world.tiles[self.entities[10].posxy.1][self.entities[10].posxy.0].occupant);
+    }
+    pub fn populate_world(&mut self) {
+        let seeds = self.rng_entity_positions();
+        for (count, entity_pos) in seeds.iter().enumerate() {
+            self.place_entity(count, *entity_pos);
+        }
+    }
+
+    fn place_entity(&mut self,id: EntityID, pos: usize) {
+        let posxy = (pos / self.world.width, pos % self.world.width);
+        self.world.place_entity_in_world(id, posxy.0, posxy.1);
+        self.entities[id].posxy = posxy;
+    }
+
+    pub fn rng_entity_positions(&self) -> Vec<usize> {
+        let mut pos_list: Vec<_> = (0..total_space(self.world.width, self.world.height)).collect();
+        let mut rng = rng();
+        pos_list.shuffle(&mut rng);
+        pos_list.truncate(self.entities.len());
+        pos_list
     }
 }
 

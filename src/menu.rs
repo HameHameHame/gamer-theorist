@@ -82,7 +82,7 @@ impl App {
         clear();
         println!("simulation starting!");
         self.gamespace = Some(Gamespace::new(&self.settings));
-        self.gamespace.as_ref().expect("gamespace not made").play();
+        self.gamespace.as_mut().expect("gamespace not made").play();
     }
 
 }
