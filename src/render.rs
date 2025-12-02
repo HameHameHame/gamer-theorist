@@ -7,7 +7,7 @@ use std::io::Write;
 pub fn render_world(gamespace: &Gamespace) {
     for row in &gamespace.world.tiles {
         for tile in row {
-            match Some(tile.occupant) {
+            match tile.occupant {
                 Some(_) => render_entity(&gamespace.entities[tile.occupant.unwrap()]),
                 None => render_space(&tile),
             }

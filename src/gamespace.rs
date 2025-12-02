@@ -1,6 +1,8 @@
 use crate::entity::*;
 use crate::menu::*;
+use crate::render::*;
 use rand::{rng, seq::SliceRandom};
+
 
 pub type EntityID = usize;
 pub struct Tile {
@@ -72,13 +74,15 @@ impl Gamespace {
             println!("entity hp: {}", ent.hp);
         }
         println!("total entities = {}", &self.entities.len());
-        println!("printable? -- {}", self.rng_entity_positions()[71]);
+        println!("printable? -- {}", self.rng_entity_positions()[0]);
         println!("worldstat: {}", self.world.width);
         self.populate_world();
-        println!("entity id: {}", self.entities[10].entity_id);
-        println!("entity position be random = {:?}", self.entities[10].posxy);
-        println!("tilepos be matching with id: {:?}", self.world.tiles[self.entities[10].posxy.1][self.entities[10].posxy.0].occupant);
+        println!("entity id: {}", self.entities[0].entity_id);
+        println!("entity position be random = {:?}", self.entities[0].posxy);
+        println!("tilepos be matching with id: {:?}", self.world.tiles[self.entities[0].posxy.1][self.entities[0].posxy.0].occupant);
+        render_world(self);
     }
+
     pub fn populate_world(&mut self) {
         let seeds = self.rng_entity_positions();
         for (count, entity_pos) in seeds.iter().enumerate() {
