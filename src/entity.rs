@@ -4,6 +4,13 @@ pub enum EntityType {
     Dove,
 }
 
+pub enum Direction {
+    North,
+    East,
+    South,
+    West
+}
+
 pub struct Entity {
     pub entity_id: EntityID,
     pub species: EntityType,
@@ -19,6 +26,16 @@ impl Entity {
             _ => Self::make_dove(id),
         }
     }
+
+    pub fn move_step(&mut self, direction: Direction) {
+        match direction {
+            Direction::North => self.posxy = (self.posxy.0, self.posxy.1 - 1),
+            Direction::East => self.posxy = (self.posxy.0 + 1, self.posxy.1),
+            Direction::South => self.posxy = (self.posxy.0, self.posxy.1 + 1), 
+            Direction::West => self.posxy = (self.posxy.0 - 1, self.posxy.1),
+        }
+    }
+
     fn make_dove(id: EntityID) -> Self {
         Self {
             entity_id: id,
