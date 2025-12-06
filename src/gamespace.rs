@@ -100,6 +100,7 @@ impl Gamespace {
     }
 
     fn simulation_step (&mut self) {
+        println!("self ent len = {}", self.entities.len());
         for entity_id in 0..self.entities.len() {
             let new_move = self.entities[entity_id].request_random_move();
             if self.parse_move_request(new_move, self.entities[entity_id].posxy) {
@@ -119,7 +120,7 @@ impl Gamespace {
     }
 
     fn pos_in_bounds(&self, posxy: (usize, usize)) -> bool {
-        posxy.1 < self.world.width && posxy.0 < self.world.height
+        posxy.0 < self.world.width - 1 && posxy.1 < self.world.height - 1
     }
 
 
@@ -131,7 +132,7 @@ impl Gamespace {
     }
 
     fn place_entity(&mut self,id: EntityID, pos: usize) {
-        let posxy = (pos / self.world.width, pos % self.world.width);
+        let posxy = (pos % self.world.width, pos / self.world.width);
         self.world.place_entity_in_world(id, posxy.0, posxy.1);
         self.entities[id].posxy = posxy;
     }
