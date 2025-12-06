@@ -86,7 +86,7 @@ impl Gamespace {
         println!("entity id: {}", self.entities[0].entity_id);
         println!("entity position be random = {:?}", self.entities[0].posxy);
         println!("tilepos be matching with id: {:?}", self.world.tiles[self.entities[0].posxy.1][self.entities[0].posxy.0].occupant);
-        render_world(self);
+        clear_screen();
         self.game_loop();
     }
 
@@ -95,6 +95,7 @@ impl Gamespace {
             clear_screen();
             render_world(self);
             self.simulation_step();
+            std::thread::sleep(std::time::Duration::from_millis(333));
         }
     }
 

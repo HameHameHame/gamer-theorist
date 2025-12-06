@@ -47,6 +47,6 @@ fn print_char(pixel: char) {
 }
 
 pub fn clear_screen() {
-    print!("\x1B[2J\x1B[H");
+    print!("\x1B[H\x1B[J\n");
     io::stdout().flush().unwrap();
 }
