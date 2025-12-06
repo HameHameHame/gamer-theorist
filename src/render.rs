@@ -45,3 +45,8 @@ fn print_char(pixel: char) {
     let f = pixel.encode_utf8(&mut bufr);
     output.write_all(f.as_bytes()).unwrap();
 }
+
+pub fn clear_screen() {
+    print!("\x1B[2J\x1B[H");
+    io::stdout().flush().unwrap();
+}

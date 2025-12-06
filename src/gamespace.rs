@@ -1,3 +1,4 @@
+use crate::entity;
 use crate::entity::*;
 use crate::menu::*;
 use crate::render::*;
@@ -46,6 +47,11 @@ impl World{
         self.tiles[y][x].occupant = Some(id);
         println!("and the value after setting = {:?}", self.tiles[y][x].occupant)
     }
+
+    pub fn move_entity(&mut self, id: EntityID, old_posxy: (usize, usize), new_posxy: (usize, usize) ) {
+        self.tiles[old_posxy.1][old_posxy.0].occupant = None;
+        self.tiles[new_posxy.1][new_posxy.0].occupant = Some(id);
+    }
 }
 
 pub struct Gamespace {
@@ -81,7 +87,40 @@ impl Gamespace {
         println!("entity position be random = {:?}", self.entities[0].posxy);
         println!("tilepos be matching with id: {:?}", self.world.tiles[self.entities[0].posxy.1][self.entities[0].posxy.0].occupant);
         render_world(self);
+        self.game_loop();
     }
+
+    fn game_loop(&mut self) {
+        for _ in 0..200 {
+            clear_screen();
+            render_world(self);
+            self.simulation_step();
+        }
+    }
+
+    fn simulation_step (&mut self) {
+        for entity_id in 0..self.entities.len() {
+            let new_move = self.entities[entity_id].request_random_move();
+            if self.parse_move_request(new_move, self.entities[entity_id].posxy) {
+                let old_pos = self.entities[entity_id].posxy;
+                self.entities[entity_id].move_step(new_move);
+                self.world.move_entity(entity_id, old_pos, self.entities[entity_id].posxy);
+            }
+        }
+    }
+
+    fn parse_move_request (&mut self,direction: Direction, currentpos:(usize, usize)) -> bool {
+        let desired_pos = new_pos_calc(direction, currentpos);
+        if self.pos_in_bounds(desired_pos) && self.world.tiles[desired_pos.1][desired_pos.0].occupant == None {
+            return true
+        }
+        return false
+    }
+
+    fn pos_in_bounds(&self, posxy: (usize, usize)) -> bool {
+        posxy.1 < self.world.width && posxy.0 < self.world.height
+    }
+
 
     pub fn populate_world(&mut self) {
         let seeds = self.rng_entity_positions();
@@ -111,4 +150,13 @@ fn total_starting_entities(percent: usize, maxspace: usize) -> usize {
 
 fn total_space(width: usize, height: usize) -> usize {
     width * height
+}
+
+fn new_pos_calc(direction: Direction, currentpos:(usize, usize)) -> (usize, usize) {
+    match direction {
+            Direction::North => (currentpos.0, currentpos.1.saturating_sub(1)),
+            Direction::East => (currentpos.0 + 1, currentpos.1),
+            Direction::South => (currentpos.0, currentpos.1 + 1), 
+            Direction::West => (currentpos.0.saturating_sub(1), currentpos.1),
+        }
 }

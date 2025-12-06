@@ -1,9 +1,11 @@
 use crate::gamespace::*;
+use rand::Rng;
 pub enum EntityType {
     Hawk,
     Dove,
 }
 
+#[derive(Copy, Clone, Debug)]
 pub enum Direction {
     North,
     East,
@@ -24,6 +26,17 @@ impl Entity {
             EntityType::Dove => Self::make_dove(id),
             EntityType::Hawk => Self::make_hawk(id),
             _ => Self::make_dove(id),
+        }
+    }
+
+    pub fn request_random_move(&self) -> Direction {
+        let d4 = rand::random::<u8>() % 4 + 1;
+        match d4 {
+            1 => Direction::North,
+            2 => Direction::East,
+            3 => Direction::South,
+            4 => Direction::West,
+            _ => Direction::North,
         }
     }
 
