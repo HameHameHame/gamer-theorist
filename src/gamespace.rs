@@ -8,7 +8,7 @@ use rand::{rng, seq::SliceRandom};
 pub type EntityID = usize;
 pub struct Tile {
     pub occupant: Option<EntityID>,
-    pub tiletype: TileType
+    pub tiletype: TileType 
 }
 
 pub enum TileType {
@@ -69,7 +69,11 @@ impl Gamespace {
     pub fn populate_entities(perc: usize, width: usize, height: usize) -> Vec<Entity> {
         let mut entities: Vec<Entity> = Vec::new();
         for id in 0..total_starting_entities(perc, total_space(width, height)) {
-            entities.push(Entity::new(id, EntityType::Dove))
+            if id % 2 == 0 {
+                entities.push(Entity::new(id, EntityType::Dove))
+            } else {
+                entities.push(Entity::new(id, EntityType::Hawk))
+            }  
         }
         return entities
     }
@@ -100,7 +104,6 @@ impl Gamespace {
     }
 
     fn simulation_step (&mut self) {
-        println!("self ent len = {}", self.entities.len());
         for entity_id in 0..self.entities.len() {
             let new_move = self.entities[entity_id].request_random_move();
             if self.parse_move_request(new_move, self.entities[entity_id].posxy) {

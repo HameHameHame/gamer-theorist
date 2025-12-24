@@ -11,7 +11,6 @@ use entity::*;
 use gamespace::*;
 use render::*;
 
-println!("push test");
 // fn get_tile_render_char (tile: &Tile) -> char {
 //     match tile.tiletype {
 //         TileType::Empty => '+',
